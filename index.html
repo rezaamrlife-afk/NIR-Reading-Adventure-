@@ -195,6 +195,13 @@ function speak(x){try{const s=window.speechSynthesis;if(!s){toast('Speech is not
 function toast(m,ms=1800){tst.textContent=m;tst.style.display='block';clearTimeout(tT);tT=setTimeout(()=>tst.style.display='none',ms)}
 
 /* ===== Game flow ===== */
+/* On phones/tablets: go fullscreen and lock landscape (Android Chrome / Samsung Internet; iPhone Safari does not allow this) */
+function goLandscape(){
+  if(!matchMedia('(pointer:coarse)').matches)return;
+  const lock=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};
+  try{const d=document.documentElement,fs=d.requestFullscreen||d.webkitRequestFullscreen,r=fs&&fs.call(d,{navigationUI:'hide'});if(r&&r.then)r.then(lock).catch(()=>{});else lock()}catch(e){}
+  setTimeout(()=>{if(innerHeight>innerWidth&&st==='play')toast('Tip: turn your phone sideways for a bigger view',3500)},1200);
+}
 function start(l,demo){
   if(!D[l]||D[l].length<3){lv=l;ov.innerHTML='<div class="card"><h2>Content unavailable</h2><p>This level’s reading bank is missing. Please choose another level.</p><button class="btn" data-a="levels">Levels</button></div>';log('missing bank',l);return}
   lv=l;sv.sel=l;save();W=1;score=rp=books=toks=keys=qF=qOK=0;lives=3;qT=9;area=-1;parts=[];spawn=60;cam=0;
@@ -202,7 +209,7 @@ function start(l,demo){
   bks=BK.map(([x,y])=>({x,y,got:0}));tks=TK.map(([x,y],i)=>({x,y,got:0,w:WORDS[l][i]}));key={x:3300,y:262,got:0};
   cps=CP.map((x,i)=>({x,i,s:0,d:D[l][i]}));
   ens=[{x:1260,a:1260,b:1480,d:1},{x:4900,a:4900,b:5200,d:1}];
-  hudU();if(demo)return;setState('play');
+  hudU();if(demo)return;goLandscape();setState('play');
 }
 function setState(s){st=s;const p=s==='play';ov.style.display=p?'none':'flex';hud.style.display=p?'flex':'none';ctl.style.display=p?'flex':'none';$('#pg').style.display=p?'block':'none';if(s!=='read')stopSpeak();if(!p)K.l=K.r=K.j=K.jp=0;render();ov.scrollTop=0;const f=ov.querySelector('button,select');if(f&&!p)f.focus({preventScroll:true})}
 function hudU(){$('#hs').textContent='Score '+(score+rp);$('#hb').textContent='Books '+books+'/'+BK.length+' · Key '+keys+'/1';const hl=$('#hl');hl.textContent='♥'.repeat(Math.max(0,lives))+'♡'.repeat(Math.max(0,3-lives));hl.setAttribute('aria-label','Lives '+lives);$('#hc').textContent='Readings '+cps.filter(c=>c.s===2).length+'/3'}
@@ -286,7 +293,7 @@ ov.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a;sfx(500,.05);
   if(a==='cefr'){sv.sel=b.dataset.l;save();render();const f=ov.querySelector('[data-a=cefr][aria-checked=true]');if(f)f.focus();return}
   if(a==='lang'){sv.lang=b.dataset.v;save();render();const f=ov.querySelector('[data-a=lang][aria-pressed=true]');if(f)f.focus();return}
-  if(a==='start')start(b.dataset.l);else if(a==='levels')setState('levels');else if(a==='menu'){rc=false;setState('menu')}
+  if(a==='start')start(b.dataset.l);else if(a==='levels')setState('levels');else if(a==='menu'){rc=false;try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch(x){}setState('menu')}
   else if(a==='snd'){sv.snd=sv.snd?0:1;save();render()}else if(a==='rc'){rc=true;render()}else if(a==='rcn'){rc=false;render()}
   else if(a==='rcy'){sv.best={};sv.done={};rc=false;save();render()}
   else if(a==='resume')setState('play');else if(a==='restart')start(lv);
