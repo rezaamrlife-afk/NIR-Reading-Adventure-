@@ -86,6 +86,24 @@ select{border:3px solid #ffc93c;border-radius:999px;background:#fff;color:#1d1a5
 .lnk{background:none;border:0;color:#fff;opacity:.85;text-decoration:underline;font:600 13px system-ui,sans-serif;min-height:44px;padding:0 12px;cursor:pointer}
 .chip:focus-visible,.lgc:focus-visible,.lnk:focus-visible{outline:3px solid #3ddbb0;outline-offset:2px}
 @media(pointer:coarse){.kb{display:none}}
+.qcard .btn{min-height:46px;margin:5px 0;padding:8px 12px}
+.qcard h2{font-size:20px;margin:0 0 6px}
+.qcard .pass{font-size:16px;line-height:1.5;padding:8px 10px}
+.qcard p{margin:8px 0 4px}
+@media (orientation:landscape) and (min-width:600px){
+ .qcard{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:min(980px,98vw);align-items:start}
+ .qcard .rl,.qcard .rr{min-width:0;max-height:calc(100vh - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-height:calc(100dvh - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain}
+ .qcard .opts{display:grid;grid-template-columns:1fr 1fr;gap:0 8px}
+ .qcard .opts .btn{min-height:44px;font-size:15px;line-height:1.25}
+}
+@media (max-height:520px){
+ .qcard{padding:10px 12px}
+ .qcard h2{font-size:17px;margin:0 0 4px}
+ .qcard .pass{font-size:15px;line-height:1.4;padding:6px 9px}
+ .qcard p{margin:0 0 4px;font-size:15px}
+ .qcard .btn{min-height:42px;margin:4px 0;padding:5px 10px;font-size:15px}
+ .qcard .fb{margin:4px 0;padding:6px 8px;font-size:14px}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body>
 <canvas id="g" aria-label="Game area"></canvas>
@@ -249,11 +267,11 @@ function upd(dt){
 function prepQ(){const q=rd.c.d[2][rd.qi];rd.q=q;rd.o=shuf(q[1].map((x,i)=>({t:x,ok:i===0})));rd.tr=0;rd.done=0;rd.sel=[];rd.msg=''}
 function readHTML(){
   const c=rd.c,q=rd.q,n=c.d[2].length;
-  return `<div class="card qcard"><h2>${esc(c.d[0])}</h2><div class="pass" dir="ltr">${esc(c.d[1])}</div>
-<button class="btn" data-a="listen">🔊 ${t('listen')}</button><p dir="ltr"><b>Question ${rd.qi+1} of ${n}: ${esc(q[0])}</b></p>`+
-  rd.o.map((o,i)=>{const bad=rd.sel.includes(i),good=rd.done&&o.ok;return `<button class="btn opt ${good?'ok':bad?'bad':''}" dir="ltr" data-a="opt" data-i="${i}" ${(rd.done||bad)?'disabled':''}>${good?'✓ ':bad?'✗ ':''}${esc(o.t)}</button>`}).join('')+
+  return `<div class="card qcard"><div class="rl"><h2>${esc(c.d[0])}</h2><div class="pass" dir="ltr">${esc(c.d[1])}</div>
+<button class="btn" data-a="listen">🔊 ${t('listen')}</button></div><div class="rr"><p dir="ltr"><b>Question ${rd.qi+1} of ${n}: ${esc(q[0])}</b></p><div class="opts">`+
+  rd.o.map((o,i)=>{const bad=rd.sel.includes(i),good=rd.done&&o.ok;return `<button class="btn opt ${good?'ok':bad?'bad':''}" dir="ltr" data-a="opt" data-i="${i}" ${(rd.done||bad)?'disabled':''}>${good?'✓ ':bad?'✗ ':''}${esc(o.t)}</button>`}).join('')+'</div>'+
   (rd.msg?`<div class="fb" id="fb" role="status">${rd.msg}</div>`:'')+
-  (rd.done?`<button class="btn pri" data-a="next">${rd.qi<n-1?t('next'):t('cont')}</button>`:'')+'</div>';
+  (rd.done?`<button class="btn pri" data-a="next">${rd.qi<n-1?t('next'):t('cont')}</button>`:'')+'</div></div>';
 }
 function answer(i){
   const o=rd.o[i],q=rd.q;if(rd.done||!o)return;rd.tr++;
