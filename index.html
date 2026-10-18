@@ -67,6 +67,25 @@ select{border:3px solid #ffc93c;border-radius:999px;background:#fff;color:#1d1a5
 .qcard .opt.bad{background:#ffe0e4;border-color:#b3122f}
 .qcard .opt[disabled]{opacity:1}
 .qcard .fb{background:#efeeff;border-color:#5a58a6;color:#1d1a5c}
+#ov.mn{background:radial-gradient(circle at 50% 110%,rgba(24,20,80,.15),rgba(24,20,80,.72))}
+.glass{max-width:440px;text-align:center;padding:18px 16px 8px;border-radius:28px;background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.06));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.3);box-shadow:0 20px 50px rgba(8,6,40,.5)}
+.glass .btn{margin:6px 0}
+.lgrow{display:flex;justify-content:flex-end;gap:6px}
+.lgc{min-width:44px;min-height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer}
+.lgc[aria-pressed=true]{background:#fff;color:#1d1a5c;border-color:#fff}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+.chip{min-height:58px;border-radius:16px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;font:800 17px/1.1 system-ui,sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px}
+.chip small{font:600 11px system-ui,sans-serif;opacity:.9}
+.chip[aria-checked=true]{background:#ffc93c;color:#3a2200;border-color:#ffc93c;box-shadow:0 0 0 4px rgba(255,201,60,.3)}
+.btn.ghost{background:rgba(255,255,255,.14);color:#fff;border:2px solid rgba(255,255,255,.35);box-shadow:none}
+.cta{font-size:20px;min-height:58px;animation:glow 2.4s infinite}
+@keyframes glow{0%,100%{box-shadow:0 5px 0 #c77c0a,0 0 0 0 rgba(255,201,60,.55)}50%{box-shadow:0 5px 0 #c77c0a,0 0 0 12px rgba(255,201,60,0)}}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.how div{background:rgba(255,255,255,.1);border-radius:14px;padding:8px 4px;font:600 12px/1.3 system-ui,sans-serif}
+.how span{display:block;font-size:22px}
+.lnk{background:none;border:0;color:#fff;opacity:.85;text-decoration:underline;font:600 13px system-ui,sans-serif;min-height:44px;padding:0 12px;cursor:pointer}
+.chip:focus-visible,.lgc:focus-visible,.lnk:focus-visible{outline:3px solid #3ddbb0;outline-offset:2px}
+@media(pointer:coarse){.kb{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body>
 <canvas id="g" aria-label="Game area"></canvas>
@@ -88,9 +107,9 @@ let sv=Object.assign({snd:1,lang:'en',sel:'A1',best:{},done:{}},load());
 if(typeof sv.best!=='object'||!sv.best)sv.best={};if(typeof sv.done!=='object'||!sv.done)sv.done={};
 const save=()=>{mem=sv;try{localStorage.setItem('nir_ra_v1',JSON.stringify(sv))}catch(e){}};
 const T={
-en:{made:'Made for NIR Academy by',by:'Dr. Niki Majidi',play:'Play',levels:'Levels',resume:'Resume',restart:'Restart level',menu:'Main menu',cont:'Continue',listen:'Listen',hint:'Hint',ok:'Correct!',no:'Not quite — that does not match the text.',reset:'Reset progress',sure:'Delete all saved progress?',yes:'Yes, reset',cancel:'Cancel',sound:'Sound',retry:'Try again',next:'Next question',how:'Run, jump and collect books. Read at each lectern, answer the questions, find the golden key, then reach the gate.',pause:'Paused'},
-fa:{made:'ساخته‌شده برای آکادمی NIR توسط',by:'دکتر نیکی مجیدی',play:'شروع بازی',levels:'مرحله‌ها',resume:'ادامه',restart:'شروع دوباره مرحله',menu:'منوی اصلی',cont:'ادامه',listen:'گوش دادن',hint:'راهنمایی',ok:'درست!',no:'درست نیست؛ با متن مطابقت ندارد.',reset:'پاک کردن پیشرفت',sure:'همهٔ پیشرفت ذخیره‌شده پاک شود؟',yes:'بله، پاک کن',cancel:'انصراف',sound:'صدا',retry:'تلاش دوباره',next:'سؤال بعدی',how:'بدوید، بپرید و کتاب جمع کنید. در هر جایگاه متن را بخوانید، به سؤال‌ها پاسخ دهید، کلید طلایی را پیدا کنید و به دروازه برسید.',pause:'متوقف شد'},
-tr:{made:'NIR Academy için hazırlayan:',by:'Dr. Niki Majidi',play:'Oyna',levels:'Seviyeler',resume:'Devam et',restart:'Seviyeyi yeniden başlat',menu:'Ana menü',cont:'Devam',listen:'Dinle',hint:'İpucu',ok:'Doğru!',no:'Tam değil — metinle uyuşmuyor.',reset:'İlerlemeyi sıfırla',sure:'Kayıtlı tüm ilerleme silinsin mi?',yes:'Evet, sıfırla',cancel:'İptal',sound:'Ses',retry:'Tekrar dene',next:'Sonraki soru',how:'Koş, zıpla ve kitap topla. Her kürsüde metni oku, soruları yanıtla, altın anahtarı bul ve kapıya ulaş.',pause:'Duraklatıldı'}};
+en:{h1:'Run & jump',h2:'Read & answer',h3:'Find the key',made:'Made for NIR Academy by',by:'Dr. Niki Majidi',play:'Play',levels:'Levels',resume:'Resume',restart:'Restart level',menu:'Main menu',cont:'Continue',listen:'Listen',hint:'Hint',ok:'Correct!',no:'Not quite — that does not match the text.',reset:'Reset progress',sure:'Delete all saved progress?',yes:'Yes, reset',cancel:'Cancel',sound:'Sound',retry:'Try again',next:'Next question',how:'Run, jump and collect books. Read at each lectern, answer the questions, find the golden key, then reach the gate.',pause:'Paused'},
+fa:{h1:'بدو و بپر',h2:'بخوان و جواب بده',h3:'کلید را پیدا کن',made:'ساخته‌شده برای آکادمی NIR توسط',by:'دکتر نیکی مجیدی',play:'شروع بازی',levels:'مرحله‌ها',resume:'ادامه',restart:'شروع دوباره مرحله',menu:'منوی اصلی',cont:'ادامه',listen:'گوش دادن',hint:'راهنمایی',ok:'درست!',no:'درست نیست؛ با متن مطابقت ندارد.',reset:'پاک کردن پیشرفت',sure:'همهٔ پیشرفت ذخیره‌شده پاک شود؟',yes:'بله، پاک کن',cancel:'انصراف',sound:'صدا',retry:'تلاش دوباره',next:'سؤال بعدی',how:'بدوید، بپرید و کتاب جمع کنید. در هر جایگاه متن را بخوانید، به سؤال‌ها پاسخ دهید، کلید طلایی را پیدا کنید و به دروازه برسید.',pause:'متوقف شد'},
+tr:{h1:'Koş ve zıpla',h2:'Oku ve yanıtla',h3:'Anahtarı bul',made:'NIR Academy için hazırlayan:',by:'Dr. Niki Majidi',play:'Oyna',levels:'Seviyeler',resume:'Devam et',restart:'Seviyeyi yeniden başlat',menu:'Ana menü',cont:'Devam',listen:'Dinle',hint:'İpucu',ok:'Doğru!',no:'Tam değil — metinle uyuşmuyor.',reset:'İlerlemeyi sıfırla',sure:'Kayıtlı tüm ilerleme silinsin mi?',yes:'Evet, sıfırla',cancel:'İptal',sound:'Ses',retry:'Tekrar dene',next:'Sonraki soru',how:'Koş, zıpla ve kitap topla. Her kürsüde metni oku, soruları yanıtla, altın anahtarı bul ve kapıya ulaş.',pause:'Duraklatıldı'}};
 const t=k=>(T[sv.lang]&&T[sv.lang][k])||T.en[k]||k;
 /* Branding: logo (falls back to text if it cannot load) and credit links */
 const LOGO='https://niracademy.com/wp-content/uploads/2026/05/Logo-1.jpeg',SITES=['niracademy.com/','niracademy.com/game-center/'];
@@ -152,6 +171,7 @@ B2:[
 ['What is the tone?',['Critical but reasoned','Joyful','Neutral and detached','Insulting'],'The writer complains but offers reasons.','Complaint plus reasons.'],
 ['What does “a fortune” mean here?',['A very large amount of money','A lucky chance','A prediction','A small gift'],'It stresses how costly the fountain was.','Compare with “bus service”.']]]]};
 const WORDS={A1:[['cheap','low price'],['noon','12 o’clock'],['garden','outdoor plants']],A2:[['collect','pick up'],['instead','in place of'],['practise','repeat to improve']],B1:[['resident','person who lives there'],['admit','say it is true'],['recipe','food instructions']],B2:[['revenue','income'],['skeptical','doubtful'],['decorate','make prettier']]};
+const CN={A1:'Starter',A2:'Basic',B1:'Middle',B2:'Upper'};
 const LVD={A1:'Short everyday texts and simple facts.',A2:'Simple stories, past and future plans.',B1:'Longer texts, main ideas and inference.',B2:'Implied meaning, tone and perspectives.'};
 
 /* ===== World (deterministic, every jump ≤110px gap / ≤80px rise) ===== */
@@ -239,14 +259,15 @@ function answer(i){
 /* ===== Screens ===== */
 function render(){
   const acc=qT?Math.round(100*qF/qT):0,fin=qT?Math.round(100*qOK/qT):0,H={
-  menu:()=>`<div class="card">${logo(48)}<h1>NIR Reading Adventure™</h1><p class="tag">Read. Explore. Collect. Understand.</p>
-<label class="sm">CEFR level<select id="lvsel">${['A1','A2','B1','B2'].map(l=>`<option ${l===sv.sel?'selected':''}>${l}</option>`).join('')}</select></label>
-<label class="sm">Interface language<select id="lang"><option value="en" ${sv.lang==='en'?'selected':''}>English</option><option value="fa" ${sv.lang==='fa'?'selected':''}>فارسی</option><option value="tr" ${sv.lang==='tr'?'selected':''}>Türkçe</option></select></label>
-<button class="btn pri" data-a="start" data-l="${sv.sel}">${t('play')} ${sv.sel}</button>
-<div class="row"><button class="btn" data-a="levels">${t('levels')}</button><button class="btn" data-a="snd">${t('sound')}: ${sv.snd?'On':'Off'}</button></div>
-<p class="sm" ${sv.lang==='fa'?'dir="rtl"':''}>${t('how')}</p>
-<p class="sm">Keyboard: ← → or A D to move · Space or ↑ to jump · Esc to pause. Touch: use the on-screen buttons.</p>
-${rc?`<div class="fb">${t('sure')}</div><div class="row"><button class="btn" data-a="rcy">${t('yes')}</button><button class="btn" data-a="rcn">${t('cancel')}</button></div>`:`<button class="btn" data-a="rc">${t('reset')}</button>`}${credit()}</div>`,
+  menu:()=>`<div class="card glass">
+<div class="lgrow" dir="ltr">${[['en','EN'],['tr','TR'],['fa','فا']].map(([v,n])=>`<button class="lgc" data-a="lang" data-v="${v}" aria-pressed="${sv.lang===v}" aria-label="Language ${n}">${n}</button>`).join('')}</div>
+${logo(52)}<h1 dir="ltr">NIR Reading Adventure™</h1><p class="tag" dir="ltr">Read. Explore. Collect. Understand.</p>
+<div class="seg" role="radiogroup" aria-label="CEFR level" dir="ltr">${['A1','A2','B1','B2'].map(l=>`<button class="chip" role="radio" data-a="cefr" data-l="${l}" aria-checked="${sv.sel===l}"><b>${sv.sel===l?'✓ ':''}${l}</b><small>${sv.done[l]?'★ ':''}${CN[l]}</small></button>`).join('')}</div>
+<button class="btn pri cta" data-a="start" data-l="${sv.sel}">▶ ${t('play')} ${sv.sel}</button>
+<div class="row"><button class="btn ghost" data-a="levels">☰ ${t('levels')}</button><button class="btn ghost" data-a="snd" aria-pressed="${!!sv.snd}">${sv.snd?'🔊':'🔇'} ${t('sound')}</button></div>
+<div class="how"><div><span>🏃</span>${t('h1')}</div><div><span>📖</span>${t('h2')}</div><div><span>🔑</span>${t('h3')}</div></div>
+<p class="sm kb">Keyboard: ← → move · Space jump · Esc pause</p>
+${rc?`<div class="fb">${t('sure')}</div><div class="row"><button class="btn" data-a="rcy">${t('yes')}</button><button class="btn" data-a="rcn">${t('cancel')}</button></div>`:`<button class="lnk" data-a="rc">${t('reset')}</button>`}${credit()}</div>`,
   levels:()=>`<div class="card"><h2>${t('levels')}</h2>${['A1','A2','B1','B2'].map(l=>`<button class="btn" data-a="start" data-l="${l}"><b>${l}</b> — ${LVD[l]}<small class="sm">${sv.done[l]?'✓ Completed':'Not completed yet'} · Best score: ${sv.best[l]||'—'}</small></button>`).join('')}<button class="btn" data-a="menu">${t('menu')}</button></div>`,
   read:()=>readHTML(),
   pause:()=>`<div class="card"><h2>${t('pause')}</h2><button class="btn pri" data-a="resume">${t('resume')}</button><button class="btn" data-a="restart">${t('restart')}</button><button class="btn" data-a="snd">${t('sound')}: ${sv.snd?'On':'Off'}</button><button class="btn" data-a="menu">${t('menu')}</button></div>`,
@@ -259,10 +280,12 @@ ${rc?`<div class="fb">${t('sure')}</div><div class="row"><button class="btn" dat
 <p class="sm">This is game practice feedback only — not an official CEFR assessment.</p>
 <button class="btn pri" data-a="start" data-l="${lv}">Replay level</button><button class="btn" data-a="levels">Select another level</button>${credit()}</div>`,
   over:()=>`<div class="card"><h1>Out of lives</h1><p>Every reader stumbles. Your reading answers are not lost — try the level again.</p><button class="btn pri" data-a="start" data-l="${lv}">${t('retry')}</button><button class="btn" data-a="menu">${t('menu')}</button></div>`};
-  ov.dir=sv.lang==='fa'?'rtl':'ltr';ov.innerHTML=(H[st]||H.menu)();
+  ov.className=st==='menu'?'mn':'';ov.dir=sv.lang==='fa'?'rtl':'ltr';ov.innerHTML=(H[st]||H.menu)();
 }
 ov.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a;sfx(500,.05);
+  if(a==='cefr'){sv.sel=b.dataset.l;save();render();const f=ov.querySelector('[data-a=cefr][aria-checked=true]');if(f)f.focus();return}
+  if(a==='lang'){sv.lang=b.dataset.v;save();render();const f=ov.querySelector('[data-a=lang][aria-pressed=true]');if(f)f.focus();return}
   if(a==='start')start(b.dataset.l);else if(a==='levels')setState('levels');else if(a==='menu'){rc=false;setState('menu')}
   else if(a==='snd'){sv.snd=sv.snd?0:1;save();render()}else if(a==='rc'){rc=true;render()}else if(a==='rcn'){rc=false;render()}
   else if(a==='rcy'){sv.best={};sv.done={};rc=false;save();render()}
