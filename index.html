@@ -68,7 +68,7 @@ select{border:3px solid #ffc93c;border-radius:999px;background:#fff;color:#1d1a5
 .qcard .opt[disabled]{opacity:1}
 .qcard .fb{background:#efeeff;border-color:#5a58a6;color:#1d1a5c}
 #ov.mn{background:radial-gradient(circle at 50% 110%,rgba(24,20,80,.15),rgba(24,20,80,.72))}
-.glass{max-width:440px;text-align:center;padding:18px 16px 8px;border-radius:28px;background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.06));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.3);box-shadow:0 20px 50px rgba(8,6,40,.5)}
+.glass{max-width:440px;text-align:center;padding:18px 16px 8px;border-radius:28px;background:linear-gradient(160deg,rgba(70,58,170,.6),rgba(24,20,80,.55));border:1px solid rgba(255,255,255,.3);box-shadow:0 20px 50px rgba(8,6,40,.5)}
 .glass .btn{margin:6px 0}
 .lgrow{display:flex;justify-content:flex-end;gap:6px}
 .lgc{min-width:44px;min-height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer}
@@ -103,6 +103,22 @@ select{border:3px solid #ffc93c;border-radius:999px;background:#fff;color:#1d1a5
  .qcard p{margin:0 0 4px;font-size:15px}
  .qcard .btn{min-height:42px;margin:4px 0;padding:5px 10px;font-size:15px}
  .qcard .fb{margin:4px 0;padding:6px 8px;font-size:14px}
+}
+.btn,.chip,.lgc,#ctl button{transition:transform .08s,background .15s,box-shadow .08s}
+@media (orientation:landscape) and (max-height:520px){
+ .glass{display:grid;grid-template-columns:1fr 1fr;column-gap:20px;align-items:center;max-width:min(900px,96vw);padding:12px 18px 4px}
+ .glass .logo{grid-column:1;grid-row:1;justify-content:flex-start;margin:0}
+ .glass .lgrow{grid-column:2;grid-row:1}
+ .glass h1{grid-column:1;grid-row:2;font-size:26px;text-align:left;margin:0}
+ .glass .tag{grid-column:1;grid-row:3;text-align:left;font-size:15px;margin:2px 0}
+ .glass .how{grid-column:1;grid-row:4;margin:4px 0}
+ .glass .seg{grid-column:2;grid-row:2;margin:0}
+ .glass .cta{grid-column:2;grid-row:3}
+ .glass>.row{grid-column:1/-1}
+ .glass .cta+.row{grid-column:2;grid-row:4}
+ .glass .kb{display:none}
+ .glass>.lnk,.glass>.cr,.glass>.fb{grid-column:1/-1;margin-top:0}
+ .glass>.lnk{justify-self:center}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body>
