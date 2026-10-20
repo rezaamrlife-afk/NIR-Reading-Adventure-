@@ -367,6 +367,7 @@ function upd(dt){
     for(const o of bks.concat(tks)){if(o.got)continue;const dx=cxp-o.x,dy=cyp-o.y,dd=Math.hypot(dx,dy);if(dd<150&&dd>1){o.x+=dx/dd*320*dt;o.y+=dy/dd*320*dt}}}
   for(const b of bks)if(!b.got&&hitR(p,b.x-10,b.y-10,20,20)){b.got=1;books++;score+=10;SND.book();pop(b.x,b.y-12,'+10','#ffd84a');spark(b.x,b.y,'#ffd84a');hudU()}
   for(const k of tks)if(!k.got&&hitR(p,k.x-12,k.y-12,24,24)){k.got=1;toks++;score+=25;SND.word();pop(k.x,k.y-16,'+25','#8fe3ff');spark(k.x,k.y,'#8fe3ff');toast(k.w[0]+' = '+k.w[1],2600);
+    if(sv.snd)sayWord(k.w[0]);
     sv.nb['v|'+lv+'|'+k.w[0]]={v:1,w:k.w[0],ex:k.w[1],lv,wrong:0,right:0};save();hudU()}
   if(!key.got&&hitR(p,key.x-12,key.y-12,24,24)){key.got=1;keys=1;score+=50;SND.key();pop(key.x,key.y-16,'+50','#ffc93c');toast('Golden key found!');hudU()}
   const ES=lv==='B1'?1.2:lv==='B2'?1.35:1;
