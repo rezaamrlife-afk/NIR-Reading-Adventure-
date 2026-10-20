@@ -377,7 +377,7 @@ function upd(dt){
       if(e.k!=='beetle'&&p.vy>0&&p.y+p.h<=ey+16){e.dead=1;p.vy=-430;p.g=0;score+=25;hudU();SND.stomp();pop(e.x+14,ey-8,'+25','#fff');const cy=ey+eh/2;burst(e.x+14,cy,'#5fd04f');burst(e.x+14,cy,'#ffd84a');burst(e.x+14,cy,'#ff6a8d')}
       else if(p.inv<=0)hit()}}
   if(boss&&!boss.dead){
-    if(!boss.on&&p.x>4640){boss.on=1;bossOn=1;toast('⚔️ '+BOSSN[lv]+'!',2200);SND.boss()}
+    if(!boss.on&&p.x>4640){boss.on=1;bossOn=1;shk=10;toast('⚔️ '+BOSSN[lv]+'!',2200);SND.boss()}
     if(boss.on){
       const sp=(70+(boss.max-boss.hp)*28)*(lv==='B2'?1.15:1);
       boss.inv-=dt;boss.hop-=dt;boss.x+=boss.d*sp*dt;
@@ -388,13 +388,15 @@ function upd(dt){
         if(p.vy>0&&p.y+p.h<=boss.y+22){boss.hp--;boss.inv=1.1;shk=9;pop(boss.x+28,boss.y-4,'-1','#ff4d6a');p.vy=-500;p.g=0;SND.stomp();
           for(let i=0;i<3;i++)burst(boss.x+28,boss.y+10,['#ffd84a','#ff6a8d','#6fd0ff'][i]);
           if(boss.hp<=0){boss.dead=1;bossOn=0;score+=150;shk=16;pop(boss.x+28,boss.y-14,'+150','#ffd84a');SND.bossdie();toast('🏆 '+BOSSN[lv]+' defeated!',2600);
-            for(let i=0;i<8;i++){burst(boss.x+28,boss.y+26,'#ffd84a');spark(boss.x+10+i*5,boss.y+10,'#fff')}hudU()}
+            for(let i=0;i<8;i++){burst(boss.x+28,boss.y+26,'#ffd84a');spark(boss.x+10+i*5,boss.y+10,'#fff')}
+for(let i=0;i<40&&parts.length<130;i++){const a=Math.random()*6.28,s=80+Math.random()*220;parts.push({x:boss.x+28,y:boss.y+26,vx:Math.cos(a)*s,vy:Math.sin(a)*s-60,l:.9,c:['#ffd84a','#ff6a8d','#6fd0ff','#fff'][i%4]})}
+hudU()}
           else toast('💥 '+boss.hp+' left',1200)}
         else if(p.inv<=0)hit()}}}
   for(const s of SPK)if(hitR(p,s+4,364,28,16)&&p.inv<=0)hit();
   if(st!=='play')return;
   for(const c of cps)if(c.s===0&&Math.abs(p.x+11-c.x)<32&&p.g){c.s=1;spawn=c.x-40;K.l=K.r=K.j=0;p.vx=0;rd={c,qi:0};SND.cp();prepQ();setState('read');return}
-  if(!gateOn&&keys>=1&&boss&&boss.dead&&cps.every(c=>c.s===2)){gateOn=1;SND.key();for(let i=0;i<12;i++)spark(GATE+30+(Math.random()-.5)*50,310+Math.random()*60,'#ffe08a');setTimeout(()=>{if(st==='play')toast('✨ The gate is open!',2200)},1700)}
+  if(!gateOn&&keys>=1&&boss&&boss.dead&&cps.every(c=>c.s===2)){gateOn=1;SND.key();shk=6;for(let i=0;i<36&&parts.length<130;i++){const a=-Math.PI*Math.random(),s=90+Math.random()*180;parts.push({x:GATE+30,y:330,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:['#ffe08a','#fff','#ffc93c'][i%3]})}for(let i=0;i<12;i++)spark(GATE+30+(Math.random()-.5)*50,310+Math.random()*60,'#ffe08a');setTimeout(()=>{if(st==='play')toast('✨ The gate is open!',2200)},1700)}
   if(p.x+11>GATE){const rdy=cps.every(c=>c.s===2);if(keys>=1&&rdy&&boss&&boss.dead){finish();return}p.x=GATE-34;p.vx=0;if(gT<=0){toast(keys<1?'Find the golden key first':!rdy?'Finish all 3 readings first':'Defeat the boss first',2200);gT=2}}
   gT-=dt;if(magnet>0){magnet-=dt;if(magnet<0)magnet=0}if(djump>0){djump-=dt;if(djump<=0){djump=0;djumpLeft=0}}
   for(const u of puItems)if(!u.got&&hitR(pl,u.x-14,u.y-14,28,28)){u.got=1;spark(u.x,u.y,'#ffe3b0');SND.pu();
@@ -631,7 +633,8 @@ function drawBoss(T){if(!boss||boss.dead)return;if(boss.x<cam-90||boss.x>cam+VW+
   cx.beginPath();cx.ellipse(0,-25,29,25,0,0,7);fo(flash?'#ffffff':lg(-50,0,C[1],C[0]),3);
   cx.fillStyle='rgba(255,255,255,.28)';cx.beginPath();cx.ellipse(-12,-38,7,4,-.5,0,7);cx.fill();
   if(boss.on){
-    for(const sd of[-1,1]){cx.beginPath();cx.ellipse(sd*10,-30,6.5,7.5,0,0,7);fo('#fff',1.8);cx.fillStyle=OL;cx.beginPath();cx.arc(sd*10+boss.d*2,-29,3,0,7);cx.fill();limb(sd*18,-42,sd*4,-36,3,OL)}
+    const ang=boss.hp<=Math.ceil(boss.max/2);
+for(const sd of[-1,1]){cx.beginPath();cx.ellipse(sd*10,-30,6.5,7.5,0,0,7);fo(ang?'#ffd6d6':'#fff',1.8);cx.fillStyle=ang?'#e0112b':OL;cx.beginPath();cx.arc(sd*10+boss.d*2,-29,3,0,7);cx.fill();limb(sd*18,-42,sd*4,ang?-32:-36,3,OL)}
     cx.beginPath();cx.moveTo(-13,-13);cx.quadraticCurveTo(0,-5,13,-13);cx.lineWidth=2.4;cx.strokeStyle=OL;cx.stroke();
     cx.fillStyle='#fff';for(const tx of[-8,-2,4,10]){cx.beginPath();cx.moveTo(tx,-11);cx.lineTo(tx+3,-11);cx.lineTo(tx+1.5,-7);cx.fill()}
   }else{
@@ -814,7 +817,7 @@ function draw(ts){
   cx.fillStyle='#e8e8f5';cx.fillRect(fx-2,262,5,112);cx.fillStyle='#ffc93c';cx.beginPath();cx.arc(fx,260,5,0,7);cx.fill();cx.fillStyle='#ff3d5a';cx.beginPath();cx.moveTo(fx+3,266);cx.lineTo(fx+46+(RM?0:Math.sin(T*6)*3),278);cx.lineTo(fx+3,290);cx.fill();
   for(let r=0;r<2;r++)for(let c=0;c<6;c++){cx.fillStyle=(r+c)%2?'#222':'#fff';cx.fillRect(fx-18+c*6,368+r*6,6,6)}
   drawGate(ok,T);
-  cx.textAlign='center';cx.textBaseline='middle';cx.font='800 13px system-ui,sans-serif';cx.fillStyle='rgba(20,20,70,.7)';rr(GATE-6,262,72,22,11);cx.fill();cx.fillStyle='#fff';cx.fillText(ok?'OPEN ✓':'LOCKED',GATE+30,274);
+  cx.textAlign='center';cx.textBaseline='middle';cx.font='800 13px system-ui,sans-serif';cx.fillStyle='rgba(20,20,70,.7)';rr(GATE-6,262,72,22,11);cx.fill();cx.fillStyle='#fff';cx.fillText(ok?'🔓 OPEN':'🔒 LOCKED',GATE+30,274);
   for(const c of cps)drawLect(c,T,cl,cr);
   for(const x of SPK){if(x<cl||x>cr)continue;for(let i=0;i<3;i++){const sx=x+i*12;cx.fillStyle='#cfd6ea';cx.beginPath();cx.moveTo(sx,380);cx.lineTo(sx+6,363);cx.lineTo(sx+12,380);cx.fill();cx.fillStyle='#7f89ad';cx.beginPath();cx.moveTo(sx+6,363);cx.lineTo(sx+12,380);cx.lineTo(sx+7,380);cx.fill()}}
   for(const b of bks){if(b.got||b.x<cl||b.x>cr)continue;const y=b.y+bob;cx.fillStyle='rgba(255,216,74,.28)';cx.beginPath();cx.arc(b.x,y,15,0,7);cx.fill();
