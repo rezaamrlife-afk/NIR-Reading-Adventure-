@@ -738,7 +738,7 @@ function drawGround(p,cl,cr){const P=PAL[lv]||PAL.A2,tx=getTex(lv),x0=Math.max(p
   const ao=cx.createLinearGradient(0,y,0,y+18);ao.addColorStop(0,'rgba(0,0,0,.4)');ao.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=ao;cx.fillRect(x0,y,x1-x0,18);
   topFace(p,y,d,dy,P);
   for(let k=Math.floor((x0-p.x)/80)-1;p.x+k*80<x1+40;k++){const h=hs(p.x+k*80),bx=p.x+k*80+20+h%40;if(bx<x0-30||bx>x1+30)continue;
-    if(bx>p.x+8&&bx<p.x+p.w-8){const by=y+34+(h>>3)%110,rx=7+h%10,ry=5+(h>>2)%7;
+    if(bx>p.x+8&&bx<p.x+p.w-8){const by=y+34+(h>>>3)%110,rx=7+h%10,ry=5+(h>>>2)%7;
       cx.fillStyle=P.stoneD;cx.beginPath();cx.ellipse(bx+1,by+2,rx,ry,0,0,7);cx.fill();cx.fillStyle=P.stone;cx.beginPath();cx.ellipse(bx,by,rx,ry,0,0,7);cx.fill();
       cx.fillStyle=P.stoneL;cx.beginPath();cx.ellipse(bx-rx*.3,by-ry*.35,rx*.45,ry*.3,0,0,7);cx.fill();
       if(hq&&h%3===0){cx.strokeStyle=P.root;cx.lineWidth=1.6;cx.beginPath();cx.moveTo(bx+10,y+4);cx.quadraticCurveTo(bx+16,y+16,bx+8,y+26+h%12);cx.stroke()}}}
