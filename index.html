@@ -246,6 +246,7 @@ const MU={
  B2:{bpm:72, r:146.83,sc:[0,3,5,7,10,12],ch:[[0,3,7],[10,14,17],[8,12,15],[7,10,14]],ty:'sine'}
 };
 let MG,mTim=0,mNext=0,mStep=0,mLv='A1',mMel=[];
+let spk=0;
 const actx=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC};
 function mkMel(l){let s=l.charCodeAt(0)*31+l.charCodeAt(1),m=[],d=2;const R=()=>(s=(s*1103515245+12345)&0x7fffffff)/0x7fffffff;
   for(let i=0;i<32;i++){if(i%8===0||R()<.35){m.push(-1);continue}d=Math.max(0,Math.min(5,d+(R()<.5?-1:1)*(R()<.7?1:2)));m.push(d)}return m}
@@ -268,7 +269,7 @@ function musApply(){
   if(!ua)return;
   if(!sv.mus){if(MG&&AC)MG.gain.setTargetAtTime(0,AC.currentTime,.1);if(mTim){clearInterval(mTim);mTim=0}return}
   const ok=st==='play'||st==='menu'||st==='levels'||st==='win'||st==='done'||st==='read'||st==='pause';
-  const vol=!ok?0:st==='read'?.18:st==='pause'?.12:.5;
+  const vol=!ok?0:spk?0:st==='read'?.18:st==='pause'?.12:.5;
   try{actx();if(!MG){MG=AC.createGain();MG.gain.value=0;MG.connect(AC.destination)}
     if(mMel.length===0||mMel.lv!==lv){mMel=mkMel(lv);mMel.lv=lv;mLv=lv;mStep=0}
     if(!mTim){mNext=AC.currentTime+.05;mTim=setInterval(mSched,60)}
@@ -283,9 +284,19 @@ const SND={ok:()=>jingle([523,659,784,1047]),bad:()=>jingle([294,220],'sawtooth'
   win:()=>jingle([523,659,784,1047,784,1047,1319],'triangle',.16,.12),over:()=>jingle([392,330,262,196],'sawtooth',.1,.2),
   word:()=>jingle([784,988],'triangle',.12,.08),key:()=>jingle([523,784,1047,1568],'triangle',.14,.07),
   combo:()=>jingle([659,784,988,1319],'square',.07,.06),pu:()=>jingle([700,900,1400],'triangle',.12,.05),boss:()=>jingle([196,147,110],'sawtooth',.14,.12),stomp:()=>jingle([300,520],'square',.1,.05),bossdie:()=>jingle([392,523,659,784,1047,1319,1568],'triangle',.16,.1)};
-const stopSpeak=()=>{try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}};
-function speak(x){try{const s=window.speechSynthesis;if(!s){toast('Speech is not supported here');return}if(s.speaking){s.cancel();return}const u=new SpeechSynthesisUtterance(x);u.lang='en-US';u.rate=.9;s.speak(u)}catch(e){toast('Speech failed')}}
-function sayWord(w){try{const s=window.speechSynthesis;if(!s){toast('Speech is not supported here');return}s.cancel();const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=.85;s.speak(u)}catch(e){toast('Speech failed')}}
+const stopSpeak=()=>{try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}spk=0};
+function say2(x,rate){
+  const s=window.speechSynthesis;
+  const u=new SpeechSynthesisUtterance(x);u.lang='en-US';u.rate=rate;
+  const end=()=>{spk=0;musApply()};
+  u.onend=end;u.onerror=end;
+  spk=1;musApply();s.speak(u);
+}
+function speak(x){try{const s=window.speechSynthesis;if(!s){toast('Speech is not supported here');return}
+  if(s.speaking){s.cancel();spk=0;musApply();return}
+  say2(x,.9)}catch(e){spk=0;musApply();toast('Speech failed')}}
+function sayWord(w){try{const s=window.speechSynthesis;if(!s){toast('Speech is not supported here');return}
+  s.cancel();say2(w,.85)}catch(e){spk=0;musApply();toast('Speech failed')}}
 function toast(m,ms=1800){tst.textContent=m;tst.style.display='block';clearTimeout(tT);tT=setTimeout(()=>tst.style.display='none',ms)}
 
 /* ===== Game flow ===== */
