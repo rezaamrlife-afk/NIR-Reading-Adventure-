@@ -217,10 +217,15 @@ B2:[
 ['What is the writer’s purpose?',['To persuade the council to change priorities','To describe a fountain’s history','To thank the council','To advertise buses'],'The writer argues money should go to everyday problems.','Look at “should first”.'],
 ['What is the tone?',['Critical but reasoned','Joyful','Neutral and detached','Insulting'],'The writer complains but offers reasons.','Complaint plus reasons.'],
 ['What does “a fortune” mean here?',['A very large amount of money','A lucky chance','A prediction','A small gift'],'It stresses how costly the fountain was.','Compare with “bus service”.']]]]};
-const WORDS={A1:[['cheap','low price'],['noon','12 o’clock'],['garden','outdoor plants']],A2:[['collect','pick up'],['instead','in place of'],['practise','repeat to improve']],B1:[['resident','person who lives there'],['admit','say it is true'],['recipe','food instructions']],B2:[['revenue','income'],['skeptical','doubtful'],['decorate','make prettier']]};
+const WORDS={A1:[['cheap','low price'],['noon','12 o’clock'],['garden','outdoor plants']],A2:[['collect','pick up'],['instead','in place of'],['practise','repeat to improve']],B1:[['resident',const WORDS={
+A1:[['cheap','low price','ارزان','ucuz'],['noon','12 o’clock','ظهر','öğle'],['garden','outdoor plants','باغچه','bahçe']],
+A2:[['collect','pick up','تحویل گرفتن','teslim almak'],['instead','in place of','به جای آن','onun yerine'],['practise','repeat to improve','تمرین کردن','pratik yapmak']],
+B1:[['resident','person who lives there','ساکن','sakin'],['admit','say it is true','اعتراف کردن','itiraf etmek'],['recipe','food instructions','دستور پخت','yemek tarifi']],
+B2:[['revenue','income','درآمد','gelir'],['skeptical','doubtful','بدبین، مشکوک','şüpheci'],['decorate','make prettier','تزئین کردن','süslemek']]};
 const CN={A1:'Starter',A2:'Basic',B1:'Middle',B2:'Upper'};
 const LVD={A1:'Short everyday texts and simple facts.',A2:'Simple stories, past and future plans.',B1:'Longer texts, main ideas and inference.',B2:'Implied meaning, tone and perspectives.'};
-
+const mean=w=>sv.lang==='fa'&&w[2]?w[2]+' ('+w[1]+')':sv.lang==='tr'&&w[3]?w[3]+' ('+w[1]+')':w[1];
+const vm=e=>{const x=(WORDS[e.lv]||[]).find(a=>a[0]===e.w);return x?mean(x):(e.ex||'')};
 /* ===== World ===== */
 const L=5400,GY=380,PL=[[-700,380,1600],[1010,380,520],[1200,300,150],[1640,380,300],[2050,380,160],[2320,320,140],[2570,380,160],[2780,320,140],[3030,380,520],[3230,300,150],[3660,380,300],[4070,380,200],[4380,330,140],[4630,380,700]].map(([x,y,w])=>({x,y,w}));
 const BK=[[450,340],[780,340],[1400,340],[1780,340],[2130,340],[2390,280],[2850,280],[3400,340],[3800,340],[4170,340],[4450,290],[4950,340]],TK=[[1275,260],[2640,340],[3880,320]],CP=[1060,3080,4680],SPK=[600,3900],GATE=5240;
@@ -369,7 +374,7 @@ function upd(dt){
   if(magnet>0){const cxp=p.x+11,cyp=p.y+17;
     for(const o of bks.concat(tks)){if(o.got)continue;const dx=cxp-o.x,dy=cyp-o.y,dd=Math.hypot(dx,dy);if(dd<150&&dd>1){o.x+=dx/dd*320*dt;o.y+=dy/dd*320*dt}}}
   for(const b of bks)if(!b.got&&hitR(p,b.x-10,b.y-10,20,20)){b.got=1;books++;score+=10;SND.book();pop(b.x,b.y-12,'+10','#ffd84a');spark(b.x,b.y,'#ffd84a');hudU()}
-  for(const k of tks)if(!k.got&&hitR(p,k.x-12,k.y-12,24,24)){k.got=1;toks++;score+=25;SND.word();pop(k.x,k.y-16,'+25','#8fe3ff');spark(k.x,k.y,'#8fe3ff');toast(k.w[0]+' = '+k.w[1],2600);
+  for(const k of tks)if(!k.got&&hitR(p,k.x-12,k.y-12,24,24)){k.got=1;toks++;score+=25;SND.word();pop(k.x,k.y-16,'+25','#8fe3ff');spark(k.x,k.y,'#8fe3ff');toast(k.w[0]+' = '+mean(k.w),2600);
     if(sv.snd)sayWord(k.w[0]);
     sv.nb['v|'+lv+'|'+k.w[0]]={v:1,w:k.w[0],ex:k.w[1],lv,wrong:0,right:0};save();hudU()}
   if(!key.got&&hitR(p,key.x-12,key.y-12,24,24)){key.got=1;keys=1;score+=50;SND.key();pop(key.x,key.y-16,'+50','#ffc93c');toast('Golden key found!');hudU()}
@@ -456,7 +461,7 @@ ${rc?`<div class="fb">${t('sure')}</div><div class="row"><button class="btn" dat
 <tr><td>Platform score</td><td><b>${score}</b></td></tr><tr><td>Reading points</td><td><b>${rp}</b></td></tr><tr><td>Total (best ${sv.best[lv]})</td><td><b>${score+rp}</b></td></tr>
 <tr><td>Books collected</td><td><b>${books}/${BK.length}</b></td></tr><tr><td>Vocabulary tokens</td><td><b>${toks}/3</b></td></tr>
 <tr><td>Questions answered</td><td><b>${qT}</b></td></tr><tr><td>First-attempt accuracy</td><td><b>${acc}%</b></td></tr><tr><td>Final accuracy (max 2 tries)</td><td><b>${fin}%</b></td></tr></table>
-<h2 style="font-size:18px;margin:10px 0 4px">Words you met</h2>${tks.map(k=>`<div class="wr" dir="ltr"><div><b>${k.got?'★ ':''}${esc(k.w[0])}</b><br><span style="color:#5a58a6">${esc(k.w[1])}</span></div><button class="btn" style="width:auto;min-height:44px;margin:0;padding:6px 14px" data-a="say" data-w="${esc(k.w[0])}" aria-label="Listen to ${esc(k.w[0])}">🔊</button></div>`).join('')}
+<h2 style="font-size:18px;margin:10px 0 4px">Words you met</h2>${tks.map(k=>`<div class="wr" dir="ltr"><div><b>${k.got?'★ ':''}${esc(k.w[0])}</b><br><span dir="auto" style="color:#5a58a6">${esc(mean(k.w))}</span></div><button class="btn" style="width:auto;min-height:44px;margin:0;padding:6px 14px" data-a="say" data-w="${esc(k.w[0])}" aria-label="Listen to ${esc(k.w[0])}">🔊</button></div>`).join('')}
 <p>${acc>=78?'Strength: you found details and ideas accurately on the first try.':'Strength: you used hints and kept going until you understood.'}</p>
 <p>Next step: ${acc<60?'before answering, reread the passage and find the exact sentence that proves your choice.':'replay aiming for 9/9 on the first try, or try the next level.'}</p>
 <p class="sm">This is game practice feedback only — not an official CEFR assessment.</p>
@@ -469,7 +474,7 @@ function openNB(){
   let h='<div class="card"><h2>📒 '+t('mywords')+'</h2>';
   if(!es.length)h+='<p style="color:#fff;margin:8px 0">'+t('nbempty')+'</p>';
   else h+=es.map(e=>e.v
-    ?'<div class="ni"><div class="nw">'+esc(e.w)+'</div><div class="ne">'+esc(e.ex)+'</div><div class="nv">★ '+esc(e.lv)+' vocabulary</div><button class="btn" style="min-height:40px;padding:4px 14px;margin:6px 0 2px" data-a="say" data-w="'+esc(e.w)+'">🔊 '+esc(e.w)+'</button></div>'
+    ?'<div class="ni"><div class="nw">'+esc(e.w)+'</div><div class="ne" dir="auto">'+esc(vm(e))+'</div><div class="nv">★ '+esc(e.lv)+' vocabulary</div><button class="btn" style="min-height:40px;padding:4px 14px;margin:6px 0 2px" data-a="say" data-w="'+esc(e.w)+'">🔊 '+esc(e.w)+'</button></div>'
     :'<div class="ni"><div class="nw">'+esc(e.w)+'</div><div class="ne">'+esc(e.q||'')+'</div><div class="nt">💡 '+esc(e.ex||'')+'</div><div class="nr">❌ '+e.wrong+' mistake'+(e.wrong!==1?'s':'')+' · ✓ '+e.right+'/2 to remove</div><button class="btn" style="min-height:40px;padding:4px 14px;margin:6px 0 2px" data-a="say" data-w="'+esc(e.w)+'">🔊 '+esc(e.w)+'</button></div>').join('');
   h+='<button class="btn pri" style="margin-top:10px" data-a="nbx" id="nbclose">✕ '+t('close')+'</button></div>';
   $('#nbc').innerHTML=h;nb.dir=sv.lang==='fa'?'rtl':'ltr';nb.style.display='flex';nb.scrollTop=0;
