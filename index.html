@@ -132,6 +132,7 @@ select{border:3px solid #ffc93c;border-radius:999px;background:#fff;color:#1d1a5
 .star-ani{display:inline-block;animation:star-in .45s ease-out both}
 @keyframes cpop{from{transform:scale(1.6)}to{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+ .wr{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;color:#1d1a5c;border-radius:14px;padding:8px 12px;margin:6px 0;text-align:left;font:15px/1.3 system-ui,sans-serif}
 </style></head><body>
 <canvas id="g" aria-label="Game area"></canvas>
 <div id="hud"><span id="hs"></span><span id="hb"></span><span id="hl"></span><span id="hc"></span><button id="hp" aria-label="Pause game">❚❚</button></div>
@@ -246,7 +247,7 @@ const MU={
  B2:{bpm:72, r:146.83,sc:[0,3,5,7,10,12],ch:[[0,3,7],[10,14,17],[8,12,15],[7,10,14]],ty:'sine'}
 };
 let MG,mTim=0,mNext=0,mStep=0,mLv='A1',mMel=[];
-let spk=0;
+let spk=0,spkId=0;
 const actx=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC};
 function mkMel(l){let s=l.charCodeAt(0)*31+l.charCodeAt(1),m=[],d=2;const R=()=>(s=(s*1103515245+12345)&0x7fffffff)/0x7fffffff;
   for(let i=0;i<32;i++){if(i%8===0||R()<.35){m.push(-1);continue}d=Math.max(0,Math.min(5,d+(R()<.5?-1:1)*(R()<.7?1:2)));m.push(d)}return m}
@@ -284,13 +285,15 @@ const SND={ok:()=>jingle([523,659,784,1047]),bad:()=>jingle([294,220],'sawtooth'
   win:()=>jingle([523,659,784,1047,784,1047,1319],'triangle',.16,.12),over:()=>jingle([392,330,262,196],'sawtooth',.1,.2),
   word:()=>jingle([784,988],'triangle',.12,.08),key:()=>jingle([523,784,1047,1568],'triangle',.14,.07),
   combo:()=>jingle([659,784,988,1319],'square',.07,.06),pu:()=>jingle([700,900,1400],'triangle',.12,.05),boss:()=>jingle([196,147,110],'sawtooth',.14,.12),stomp:()=>jingle([300,520],'square',.1,.05),bossdie:()=>jingle([392,523,659,784,1047,1319,1568],'triangle',.16,.1)};
-const stopSpeak=()=>{try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}spk=0};
+const stopSpeak=()=>{try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}spk=0;spkId++};
 function say2(x,rate){
   const s=window.speechSynthesis;
   const u=new SpeechSynthesisUtterance(x);u.lang='en-US';u.rate=rate;
-  const end=()=>{spk=0;musApply()};
+  const id=++spkId;
+  const end=()=>{if(id!==spkId)return;spk=0;musApply()};
   u.onend=end;u.onerror=end;
   spk=1;musApply();s.speak(u);
+  setTimeout(()=>{if(id===spkId&&spk&&!s.speaking&&!s.pending){spk=0;musApply()}},1500);
 }
 function speak(x){try{const s=window.speechSynthesis;if(!s){toast('Speech is not supported here');return}
   if(s.speaking){s.cancel();spk=0;musApply();return}
@@ -453,6 +456,7 @@ ${rc?`<div class="fb">${t('sure')}</div><div class="row"><button class="btn" dat
 <tr><td>Platform score</td><td><b>${score}</b></td></tr><tr><td>Reading points</td><td><b>${rp}</b></td></tr><tr><td>Total (best ${sv.best[lv]})</td><td><b>${score+rp}</b></td></tr>
 <tr><td>Books collected</td><td><b>${books}/${BK.length}</b></td></tr><tr><td>Vocabulary tokens</td><td><b>${toks}/3</b></td></tr>
 <tr><td>Questions answered</td><td><b>${qT}</b></td></tr><tr><td>First-attempt accuracy</td><td><b>${acc}%</b></td></tr><tr><td>Final accuracy (max 2 tries)</td><td><b>${fin}%</b></td></tr></table>
+<h2 style="font-size:18px;margin:10px 0 4px">Words you met</h2>${tks.map(k=>`<div class="wr" dir="ltr"><div><b>${k.got?'★ ':''}${esc(k.w[0])}</b><br><span style="color:#5a58a6">${esc(k.w[1])}</span></div><button class="btn" style="width:auto;min-height:44px;margin:0;padding:6px 14px" data-a="say" data-w="${esc(k.w[0])}" aria-label="Listen to ${esc(k.w[0])}">🔊</button></div>`).join('')}
 <p>${acc>=78?'Strength: you found details and ideas accurately on the first try.':'Strength: you used hints and kept going until you understood.'}</p>
 <p>Next step: ${acc<60?'before answering, reread the passage and find the exact sentence that proves your choice.':'replay aiming for 9/9 on the first try, or try the next level.'}</p>
 <p class="sm">This is game practice feedback only — not an official CEFR assessment.</p>
@@ -484,7 +488,7 @@ ov.addEventListener('click',e=>{
   else if(a==='rc'){rc=true;render()}else if(a==='rcn'){rc=false;render()}
   else if(a==='rcy'){sv.best={};sv.done={};sv.stars={};sv.nb={};rc=false;save();render()}
   else if(a==='resume')setState('play');else if(a==='restart')start(lv);
-  else if(a==='listen')speak(rd.c.d[1]);else if(a==='opt')answer(+b.dataset.i);
+  else if(a==='listen')speak(rd.c.d[1]);else if(a==='say')sayWord(b.dataset.w);else if(a==='opt')answer(+b.dataset.i);
   else if(a==='next'){
     if(rd&&rd.q&&rd.done&&!rd.sel.length){const k=nbKey(rd.q),en=sv.nb[k];if(en){en.right++;if(en.right>=2)delete sv.nb[k];save()}}
     if(rd.qi<rd.c.d[2].length-1){rd.qi++;prepQ();render();ov.scrollTop=0}else{rd.c.s=2;hudU();toast('Reading complete — keep going!');setState('play')}}
@@ -702,7 +706,8 @@ function drawLect(c,T,cl,cr){if(c.x<cl||c.x>cr)return;const d=c.s===2,x=c.x,tt=R
   cx.strokeStyle='#c9a35a';cx.lineWidth=1;for(let i=0;i<3;i++){cx.beginPath();cx.moveTo(-11,-4-i*3.4);cx.lineTo(-3,-6-i*3.4);cx.moveTo(3,-6-i*3.4);cx.lineTo(11,-4-i*3.4);cx.stroke()}
   cx.beginPath();cx.moveTo(0,-3);cx.lineTo(0,-17);cx.strokeStyle=OL;cx.lineWidth=1.5;cx.stroke();cx.restore();
   const by=300+(RM?0:Math.sin(tt*3)*2);cx.beginPath();cx.arc(x,by,9,0,7);fo(d?'#2fa24f':'#ffc93c',2);
-  cx.fillStyle=d?'#fff':'#3a2200';cx.font='800 12px system-ui,sans-serif';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(d?'✓':'?',x,by+.5)}
+  cx.fillStyle=d?'#fff':'#3a2200';cx.font='800 12px system-ui,sans-serif';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(d?'✓':'?',x,by+.5);
+  if(c.s===0){const ay=274-(RM?0:Math.abs(Math.sin(tt*3.5))*8);cx.beginPath();cx.moveTo(x-8,ay-10);cx.lineTo(x+8,ay-10);cx.lineTo(x,ay+2);cx.closePath();fo('#ffc93c',2)}}
 function drawGate(ok,T){const tt=RM?0:T,G=GATE;
   if(ok&&hq){cx.save();cx.globalCompositeOperation='lighter';for(let i=0;i<6;i++){const a=tt*.6+i*1.05;cx.fillStyle='rgba(255,224,130,.10)';cx.beginPath();cx.moveTo(G+30,335);cx.lineTo(G+30+Math.cos(a)*150,335+Math.sin(a)*150);cx.lineTo(G+30+Math.cos(a+.16)*150,335+Math.sin(a+.16)*150);cx.closePath();cx.fill()}cx.restore()}
   cx.fillStyle=ok?'#ffc93c':'#6b5bd6';rr(G,290,60,90,12);cx.fill();
@@ -840,9 +845,9 @@ function draw(ts){
   cx.textAlign='left';
   const pc=Math.min(100,pl.x/GATE*100|0);if(pc!==lastPc){lastPc=pc;pg.style.width=pc+'%'}
 }
-let last=0;
+let last=0,errOnce=0;
 function loop(ts){requestAnimationFrame(loop);const dt=Math.min(.05,(ts-last)/1000||0);last=ts;gfxWatch(dt);if(st==='play')upd(dt);else if(st==='menu'||st==='levels'){cam+=70*dt;if(cam>L-VW-10)cam=0}else if(st==='win'){winT-=dt;if(!RM&&Math.random()<.35)burst(pl.x+11+(Math.random()-.5)*200,pl.y-90,['#ffd84a','#ff6a8d','#6fd0ff','#7ee06a'][Math.random()*4|0]);if(winT<=0)setState('done')}
-for(const q of parts){q.l-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=(q.d||q.rg?0:400)*dt}parts=parts.filter(q=>q.l>0);for(const f of fls){f.l-=dt;f.y-=36*dt}fls=fls.filter(f=>f.l>0);shk=Math.max(0,shk-dt*28);gateOpen=gateOn?Math.min(1,gateOpen+dt*1.2):0;draw(ts)}
+for(const q of parts){q.l-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=(q.d||q.rg?0:400)*dt}parts=parts.filter(q=>q.l>0);for(const f of fls){f.l-=dt;f.y-=36*dt}fls=fls.filter(f=>f.l>0);shk=Math.max(0,shk-dt*28);gateOpen=gateOn?Math.min(1,gateOpen+dt*1.2):0;try{draw(ts)}catch(err){cx.globalAlpha=1;cx.globalCompositeOperation='source-over';cx.textAlign='left';if(!errOnce){errOnce=1;console.error(err)}}}
 size();start(sv.sel,1);setState('menu');requestAnimationFrame(loop);
 })();
 </script></body></html>
