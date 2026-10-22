@@ -268,17 +268,17 @@ B2:[
 ['What is the tone?',['Critical but reasoned','Joyful','Neutral and detached','Insulting'],'The writer complains but offers reasons.','Complaint plus reasons.'],
 ['What does “a fortune” mean here?',['A very large amount of money','A lucky chance','A prediction','A small gift'],'It stresses how costly the fountain was.','Compare with “bus service”.']]]]};
 const WORDS={
-A1:[['cheap','low price','ارزان','ucuz'],['noon','12 o’clock','ظهر','öğle'],['garden','outdoor plants','باغچه','bahçe']],
-A2:[['collect','pick up','تحویل گرفتن','teslim almak'],['instead','in place of','به جای آن','onun yerine'],['practise','repeat to improve','تمرین کردن','pratik yapmak']],
-B1:[['resident','person who lives there','ساکن','sakin'],['admit','say it is true','اعتراف کردن','itiraf etmek'],['recipe','food instructions','دستور پخت','yemek tarifi']],
-B2:[['revenue','income','درآمد','gelir'],['skeptical','doubtful','بدبین، مشکوک','şüpheci'],['decorate','make prettier','تزئین کردن','süslemek']]};
+A1:[['cheap','low price','ارزان','ucuz'],['noon','12 o’clock','ظهر','öğle'],['garden','outdoor plants','باغچه','bahçe'],['bread','food made from flour','نان','ekmek'],['sofa','soft seat for two or three people','مبل','koltuk'],['expensive','costing a lot of money','گران','pahalı']],
+A2:[['collect','pick up','تحویل گرفتن','teslim almak'],['instead','in place of','به جای آن','onun yerine'],['practise','repeat to improve','تمرین کردن','pratik yapmak'],['umbrella','cover that keeps rain off you','چتر','şemsiye'],['cousin','child of your aunt or uncle','پسرعمو، دخترعمو','kuzen'],['messy','not clean or tidy','نامرتب','dağınık']],
+B1:[['resident','person who lives there','ساکن','sakin'],['admit','say it is true','اعتراف کردن','itiraf etmek'],['recipe','food instructions','دستور پخت','yemek tarifi'],['council','group that makes decisions for a town','شورا','meclis'],['volunteer','person who helps without pay','داوطلب','gönüllü'],['forecast','report about future weather','پیش‌بینی','tahmin']],
+B2:[['revenue','income','درآمد','gelir'],['skeptical','doubtful','بدبین، مشکوک','şüpheci'],['decorate','make prettier','تزئین کردن','süslemek'],['evidence','facts that show something is true','شواهد','kanıt'],['unreliable','cannot be trusted','غیرقابل‌اعتماد','güvenilmez'],['recover','become healthy or normal again','بهبود یافتن','toparlanmak']]};
 const CN={A1:'Starter',A2:'Basic',B1:'Middle',B2:'Upper'};
 const LVD={A1:'Short everyday texts and simple facts.',A2:'Simple stories, past and future plans.',B1:'Longer texts, main ideas and inference.',B2:'Implied meaning, tone and perspectives.'};
 const mean=w=>sv.lang==='fa'&&w[2]?w[2]+' ('+w[1]+')':sv.lang==='tr'&&w[3]?w[3]+' ('+w[1]+')':w[1];
 const vm=e=>{const x=(WORDS[e.lv]||[]).find(a=>a[0]===e.w);return x?mean(x):(e.ex||'')};
 /* ===== World ===== */
 const L=5400,GY=380,PL=[[-700,380,1600],[1010,380,520],[1200,300,150],[1640,380,300],[2050,380,160],[2320,320,140],[2570,380,160],[2780,320,140],[3030,380,520],[3230,300,150],[3660,380,300],[4070,380,200],[4380,330,140],[4630,380,700]].map(([x,y,w])=>({x,y,w}));
-const BK=[[450,340],[780,340],[1400,340],[1780,340],[2130,340],[2390,280],[2850,280],[3400,340],[3800,340],[4170,340],[4450,290],[4950,340]],TK=[[1275,260],[2640,340],[3880,320]],CP=[1060,3080,4680],SPK=[600,3900],GATE=5240;
+const BK=[[450,340],[780,340],[1400,340],[1780,340],[2130,340],[2390,280],[2850,280],[3400,340],[3800,340],[4170,340],[4450,290],[4950,340]],TK=[[1275,260],[2640,340],[3880,320],[330,340],[1120,340],[3720,340]],CP=[1060,3080,4680],SPK=[600,3900],GATE=5240;
 const AREA=['The Library Entrance','The Floating Book Bridge','The Vocabulary Garden','The Mystery Reading Hall','The Ancient Story Chamber','The Golden Reading Gate'];
 const TH={A1:{sky:['#ff9a8a','#ffc9a0','#fff0c8'],hl:['#d6a0c8','#b0b8d8','#6fbf8a'],cl:'rgba(255,240,230,.85)',sun:'#fff0b0',sy:150},
 A2:{sky:['#2f7bff','#8fd3ff','#dff4ff'],hl:['#9fa9ee','#6fc3c9','#43a98a'],cl:'rgba(255,255,255,.9)',sun:'#fff6c8',sy:80},
@@ -525,7 +525,7 @@ const mc=ns>=3?['#ffd84a','#c77c0a']:ns===2?['#e3e8f5','#7f89ad']:['#e8a46a','#8
 const medal=`<div class="star-ani" style="animation-delay:.6s"><svg viewBox="0 0 64 80" width="76" height="96" role="img" aria-label="Reader ${lv} medal"><path d="M18 2h12l6 22H24z" fill="#ff6a8d" stroke="#1b1850" stroke-width="2" stroke-linejoin="round"/><path d="M46 2H34l-6 22h12z" fill="#ff6a8d" stroke="#1b1850" stroke-width="2" stroke-linejoin="round"/><circle cx="32" cy="50" r="22" fill="${mc[0]}" stroke="#1b1850" stroke-width="3"/><circle cx="32" cy="50" r="15" fill="none" stroke="${mc[1]}" stroke-width="2.5"/><text x="32" y="56" text-anchor="middle" font-family="Fredoka,system-ui,sans-serif" font-weight="700" font-size="16" fill="#1b1850">${lv}</text></svg></div>`;
 return `${cf}<div class="card">${logo(36)}<h1>Level ${lv} complete!</h1><p style="margin:4px 0">${sa}</p><div style="text-align:center">${medal}<p class="tag" style="margin:2px 0">Reader ${lv}</p></div><table>
 <tr><td>Platform score</td><td><b>${score}</b></td></tr><tr><td>Reading points</td><td><b>${rp}</b></td></tr><tr><td>Total (best ${sv.best[lv]})</td><td><b>${score+rp}</b></td></tr>
-<tr><td>Books collected</td><td><b>${books}/${BK.length}</b></td></tr><tr><td>Vocabulary tokens</td><td><b>${toks}/3</b></td></tr>
+<tr><td>Books collected</td><td><b>${books}/${BK.length}</b></td></tr><tr><td>Vocabulary tokens</td><td><b>${toks}/${tks.length}</b></td></tr>
 <tr><td>Questions answered</td><td><b>${qT}</b></td></tr><tr><td>First-attempt accuracy</td><td><b>${acc}%</b></td></tr><tr><td>Final accuracy (max 2 tries)</td><td><b>${fin}%</b></td></tr></table>
 <h2 style="font-size:18px;margin:10px 0 4px">Words you met</h2>${tks.map(k=>`<div class="wr" dir="ltr"><div><b>${k.got?'★ ':''}${esc(k.w[0])}</b><br><span dir="auto" style="color:#5a58a6">${esc(mean(k.w))}</span></div><button class="btn" style="width:auto;min-height:44px;margin:0;padding:6px 14px" data-a="say" data-w="${esc(k.w[0])}" aria-label="Listen to ${esc(k.w[0])}">🔊</button></div>`).join('')}
 <p>${acc>=78?'Strength: you found details and ideas accurately on the first try.':'Strength: you used hints and kept going until you understood.'}</p>
