@@ -745,7 +745,7 @@ function drawHero(ts){
   const ln=(x1,y1,x2,y2,w,c)=>{cx.lineCap='round';cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.lineWidth=w+2.4;cx.strokeStyle=OL;cx.stroke();cx.lineWidth=w;cx.strokeStyle=c;cx.stroke()};
 
   cx.save();cx.translate(p.x+11,p.y+p.h+(win?-Math.abs(Math.sin(ts/170))*16:0));
-  cx.scale(p.f*(1+p.sq*.5),1-p.sq*.5);
+  cx.scale(p.f*(1+p.sq*.5),(1-p.sq*.5)*1.3);
   cx.rotate(mv?0.09+spd*.03:rise*-.05+fallk*.06);
   cx.translate(0,bob+cr*.5);
   cx.lineCap='round';cx.lineJoin='round';
