@@ -724,7 +724,6 @@ const fo=(c,w)=>{cx.fillStyle=c;cx.fill();cx.lineWidth=w||2;cx.strokeStyle=OL;cx
 const limb=(x1,y1,x2,y2,w,c)=>{cx.lineCap='round';cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.lineWidth=w+3;cx.strokeStyle=OL;cx.stroke();cx.lineWidth=w;cx.strokeStyle=c;cx.stroke()};
 const lg=(y0,y1,c0,c1)=>{const g=cx.createLinearGradient(0,y0,0,y1);g.addColorStop(0,c0);g.addColorStop(1,c1);return g};
 /* ===== Hero v3: NIR Scholar (modern, cel-shaded) ===== */
-const HS=1.2; /* اندازهٔ قهرمان: 1 = قبلی، 1.2 = ۲۰٪ بلندتر */
 let emoK='',emoT=0,emoL=0;
 const feel=(k,d)=>{emoK=k;emoT=d};
 const c01=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
