@@ -724,6 +724,7 @@ const fo=(c,w)=>{cx.fillStyle=c;cx.fill();cx.lineWidth=w||2;cx.strokeStyle=OL;cx
 const limb=(x1,y1,x2,y2,w,c)=>{cx.lineCap='round';cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.lineWidth=w+3;cx.strokeStyle=OL;cx.stroke();cx.lineWidth=w;cx.strokeStyle=c;cx.stroke()};
 const lg=(y0,y1,c0,c1)=>{const g=cx.createLinearGradient(0,y0,0,y1);g.addColorStop(0,c0);g.addColorStop(1,c1);return g};
 /* ===== Hero v3: NIR Scholar (modern, cel-shaded) ===== */
+const HS=1.2; /* اندازهٔ قهرمان: 1 = قبلی، 1.2 = ۲۰٪ بلندتر */
 let emoK='',emoT=0,emoL=0;
 const feel=(k,d)=>{emoK=k;emoT=d};
 const c01=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -736,7 +737,7 @@ function drawHero(ts){
   const s=mv?Math.sin(ph):0,cr=Math.max(0,p.sq)*16,breath=!air&&!mv?Math.sin(T*2.2)*.9:0;
   const bob=mv?-Math.abs(s)*3:breath;
   const hh=Math.max(0,p.gy-(p.y+p.h)),k=Math.max(.4,1-hh/160);
-  cx.fillStyle='rgba(20,20,60,'+.3*k+')';cx.beginPath();cx.ellipse(p.x+11,p.gy-1,13*k,4*k,0,0,7);cx.fill();
+  cx.fillStyle='rgba(20,20,60,'+.3*k+')';cx.beginPath();cx.ellipse(p.x+11,p.gy-1,13*k*HS,4*k*HS,0,0,7)cx.fill();
   if(p.inv>0&&((ts/90)|0)%2)return;
   const E=win?'win':emoT>0?emoK:'';
   const mood=E==='ouch'?3:(E==='joy'||E==='win')?2:(rise>.3||fallk>.6)?1:0;
@@ -745,7 +746,7 @@ function drawHero(ts){
   const ln=(x1,y1,x2,y2,w,c)=>{cx.lineCap='round';cx.beginPath();cx.moveTo(x1,y1);cx.lineTo(x2,y2);cx.lineWidth=w+2.4;cx.strokeStyle=OL;cx.stroke();cx.lineWidth=w;cx.strokeStyle=c;cx.stroke()};
 
   cx.save();cx.translate(p.x+11,p.y+p.h+(win?-Math.abs(Math.sin(ts/170))*16:0));
-  cx.scale(p.f*(1+p.sq*.5),1-p.sq*.5);
+  cx.scale(p.f*(1+p.sq*.5)*HS,(1-p.sq*.5)*HS);
   cx.rotate(mv?0.09+spd*.03:rise*-.05+fallk*.06);
   cx.translate(0,bob+cr*.5);
   cx.lineCap='round';cx.lineJoin='round';
